@@ -614,6 +614,7 @@ function initWordLists (wordLists)
             gameTypeLabel.innerText = titleString;
         }
         gameElem.innerText = titleString;
+        //alert(window.location.href);
         gameElem.addEventListener("click", selectGameType, false);
         newGameList.appendChild(gameElem);
     }
@@ -635,6 +636,7 @@ function selectGameType (event)
         gameTypeLabel = gameTypeLabel || document.getElementById("game_type");
         gameTypeLabel.innerText = event.target.innerText;
     }
+    alert(game_type);
     hideDialog("newGame_dialog");
     startGame();
 }
@@ -815,7 +817,7 @@ var wordLists = [
     {"title":"words_nations",   "src":"nations.json"},
     {"title":"words_phrases",   "src":"phrases.json"},
     {"title":"words_bodyParts", "src":"bodyparts.json"},
-    //{"title":"words_common",    "method":""},
+    {"title":"words_custom",    "method":""},
 ];
 
 var numClouds = 0;
