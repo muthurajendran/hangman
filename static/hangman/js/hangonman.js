@@ -21,12 +21,12 @@
   - falling man
 */
 var soundBoard = new SoundBoard({
-    "background": {url: "static/hangman/audio/Background.ogg", loop: true},
-    "click": {url: "static/hangman/audio/ButtonClick.ogg"},
-    "yeah": {url: "static/hangman/audio/Yeah.ogg"},
-    "woah": {url: "static/hangman/audio/Whoa.ogg"},
-    "lose": {url: "static/hangman/audio/LoseGame.ogg"},
-    "dialog": {url: "static/hangman/audio/Banner.ogg"}
+    "background": {url: "/static/hangman/audio/Background.ogg", loop: true},
+    "click": {url: "/static/hangman/audio/ButtonClick.ogg"},
+    "yeah": {url: "/static/hangman/audio/Yeah.ogg"},
+    "woah": {url: "/static/hangman/audio/Whoa.ogg"},
+    "lose": {url: "/static/hangman/audio/LoseGame.ogg"},
+    "dialog": {url: "/static/hangman/audio/Banner.ogg"}
 });
 
 function getStyle (elem, prop)
@@ -579,7 +579,7 @@ function restartBounce (isLast)
 
 function readwordlist(item)
 {
-    var file = "static/hangman/data/"+item.src;
+    var file = "/static/hangman/data/"+item.src;
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
     request.onload = function(e) {
@@ -739,14 +739,24 @@ function playAgain (event)
     //json['hint'] = hint;
     //json = JSON.stringify(json);
 
-    var param = "word='"+word+"'&hint='"+hint+"'";
+    var param = 'word='+word+'&hint='+hint;
+    
+    $.ajax({
+  type: "POST",
+  url: 'http://localtest.me/questions/',
+  data: param,
+  success: function(){alert('hi');},
+});
+    
+    /*
 
     //alert(word+" "+hint);
 
-    load('http://localtest.me:8001/questions/', param , function(xhr) {
+    load('http://localtest.me/questions2/', param , function(xhr) {
         alert(xhr.responseText);
         //document.getElementById('container').innerHTML = xhr.responseText;
-    });
+    });*/
+    
     ignoreNewGame = false;
     hideDialog("win_dialog", "lose_dialog");
     startGame();

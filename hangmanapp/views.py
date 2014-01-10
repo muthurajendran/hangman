@@ -14,6 +14,20 @@ def home(request):
     else:
         return render_to_response('home.html')
 
+class HangManView(View):
+    def get(self, request, question_id=None):
+        if question_id is not None:
+            question = Question.objects.get(pk=question_id)
+        else:
+            random_idx = random.randint(0, Question.objects.count() - 1)
+            question = Question.objects.all()[random_idx]
+        
+        if request.user.is_authenticated():
+            return render_to_response('index.html', locals())
+        
+        return render_to_response('home.html')
+        
+
 class QuestionView(View):
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
@@ -41,9 +55,23 @@ class QuestionView(View):
         hint = request.POST.get('hint')
         print word
         print hint
-        question = Question(word=word, hint=hint, user=request.user)
+        print request.user
+        question = Question(word=word, hint=hint, created_by=request.user)
         question.save()
         
         return HttpResponse(status=201)
-        
-        
+
+@csrf_exempt
+def post2(request):
+    word = request.POST.get('word')
+    hint = request.POST.get('hint')
+    print word
+    print hint
+    print request.user
+    question = Question(word=word, hint=hint, created_by=request.user)
+    question.save()
+    
+    return HttpResponse(status=201)
+
+    
+    
