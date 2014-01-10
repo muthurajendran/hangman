@@ -39,7 +39,8 @@ class QuestionView(View):
     def post(self, request):
         word = request.POST.get('word')
         hint = request.POST.get('hint')
-        
+        print word
+        print hint
         question = Question(word=word, hint=hint, user=request.user)
         question.save()
         

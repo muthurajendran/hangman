@@ -734,14 +734,16 @@ function playAgain (event)
     var word = document.getElementById("word_challenge").value;
     var hint = document.getElementById("word_hint").value;
     
-    var json = {};
-    json['word'] = word;
-    json['hint'] = hint;
-    json = JSON.stringify(json);
+    //var json = {};
+    //json['word'] = word;
+    //json['hint'] = hint;
+    //json = JSON.stringify(json);
+
+    var param = "word='"+word+"'&hint='"+hint+"'";
 
     //alert(word+" "+hint);
 
-    load('http://localtest.me:8001/questions/', json , function(xhr) {
+    load('http://localtest.me:8001/questions/', param , function(xhr) {
         alert(xhr.responseText);
         //document.getElementById('container').innerHTML = xhr.responseText;
     });
