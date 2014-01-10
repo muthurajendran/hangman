@@ -6,6 +6,7 @@ admin.autodiscover()
 import debug_toolbar
 
 urlpatterns = patterns('',
+    url(r'', include('social_auth.urls'), name='django_social_auth'),
     url(r'^__debug__/', include(debug_toolbar.urls)),
 
     # Examples:

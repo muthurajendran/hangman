@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'debug_toolbar',
     'accounts',
+    'social_auth',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -50,6 +52,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.facebook.FacebookBackend',
+)
+
+SESSION_SERIALIZER='django.contrib.sessions.serializers.PickleSerializer'
 
 ROOT_URLCONF = 'hangman.urls'
 
