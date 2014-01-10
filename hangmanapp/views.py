@@ -9,7 +9,7 @@ from django.views.generic.base import View
 from django.db.models import Sum
 from models import Question, Score
 from social_auth.models import UserSocialAuth
-
+from django.conf import settings
 
 def home(request):
     if request.user.is_authenticated():
@@ -22,14 +22,16 @@ class HangManView(View):
         if question_id is not None:
             question = Question.objects.get(pk=question_id)
         else:
-            random_idx = random.randint(0, Question.objects.count() - 1)
-            question = Question.objects.all()[random_idx]
+            if Question.objects.count() > 0:
+                random_idx = random.randint(0, Question.objects.count() - 1)
+                question = Question.objects.all()[random_idx]
             
-        score = 0 #Score.objects.filter(user=request.user).annotate(x=Sum('score'))
-        
-        if request.user.is_authenticated():
-            return render_to_response('index.html', locals())
-        
+                score = Score.objects.filter(user=request.user).annotate(x=Sum('score'))
+                root_domain = settings.ROOT_DOMAIN
+                if request.user.is_authenticated():
+                    return render_to_response('index.html', locals())
+            else:
+                return render_to_response('index.html', locals())
         return render_to_response('home.html')
         
 
