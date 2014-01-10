@@ -1,5 +1,6 @@
 import random
 import json
+import facebook
 
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, render_to_response
@@ -7,6 +8,8 @@ from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Sum
 from models import Question, Score
+from social_auth.models import UserSocialAuth
+
 
 def home(request):
     if request.user.is_authenticated():
@@ -33,15 +36,22 @@ class HangManView(View):
 class CreateQuestionView(View):
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
-        return super(QuestionView, self).dispatch(*args, **kwargs)
+        return super(CreateQuestionView, self).dispatch(*args, **kwargs)
     
     @csrf_exempt
     def post(self, request):
         word = request.POST.get('word')
         hint = request.POST.get('hint')
-
+        print word
+        print hint
+        print request.user
         question = Question(word=word, hint=hint, created_by=request.user)
         question.save()
+        
+        fb_oauth_access_token = UserSocialAuth.get_social_auth_for_user(request.user).filter(provider='facebook')[0].tokens['access_token']
+        graph = facebook.GraphAPI(fb_oauth_access_token)
+        message = "http://localtest.me/q/%d" % question.id
+        graph.put_object("me", "feed", message=message)
         
         return HttpResponse(status=201)
 
@@ -71,6 +81,11 @@ def post2(request):
     print request.user
     question = Question(word=word, hint=hint, created_by=request.user)
     question.save()
+    
+    fb_oauth_access_token = UserSocialAuth.get_social_auth_for_user(request.user).filter(provider='facebook')[0].tokens['access_token']
+    graph = facebook.GraphAPI(fb_oauth_access_token)
+    message = "http://localtest.me/q/%d" % question.id
+    graph.put_object("me", "feed", message=message)
     
     return HttpResponse(status=201)
 
