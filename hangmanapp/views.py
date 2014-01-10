@@ -40,7 +40,8 @@ class QuestionView(View):
         word = request.POST.get('word')
         hint = request.POST.get('hint')
         
-        #qu#question.save()
+        question = Question(word=word, hint=hint, user=request.user)
+        question.save()
         
         return HttpResponse(status=201)
         
