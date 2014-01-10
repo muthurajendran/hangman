@@ -1,6 +1,9 @@
 from django.conf.urls import patterns, include, url
-from views import home
+from django.contrib.auth.decorators import login_required
+from views import home, QuestionView
 
 urlpatterns = patterns('',
-       url(r'', home)
+       url(r'^$', home),
+       url(r'^questions/$', login_required(QuestionView.as_view())),
+       url(r'^questions/(?P<question_id>\d+)/$', login_required(QuestionView.as_view())),
        )
