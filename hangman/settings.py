@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'accounts',
     'social_auth',
+    'hangmanapp',
 
 )
 
@@ -95,6 +96,9 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(os.path.dirname(__file__), '../templates'),
+    os.path.join(os.path.dirname(__file__), 'hangmanapp/templates'),
+    os.path.join(os.path.dirname(__file__), 'accounts/templates'),
+
 
 )
 
