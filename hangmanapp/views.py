@@ -1,6 +1,7 @@
 import random
 import json
 
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.views.generic.base import View
@@ -14,6 +15,10 @@ def home(request):
         return render_to_response('home.html')
 
 class QuestionView(View):
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(QuestionView, self).dispatch(*args, **kwargs)
+    
     def get(self, request, question_id=None):
         #Get a question from id, if no id then random
         if question_id is not None:
@@ -29,14 +34,14 @@ class QuestionView(View):
         question_dict['user'] = question.created_by.first_name
         
         return HttpResponse(json.dumps(question_dict))
-        
+    
+    @csrf_exempt
     def post(self, request):
         word = request.POST.get('word')
         hint = request.POST.get('hint')
         
-        question = Question(word=word, hint=hint, user=request.user)
-        question.save()
+        #qu#question.save()
         
-        return HttpResponse("Done")
+        return HttpResponse(status=201)
         
         
