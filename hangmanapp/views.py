@@ -21,6 +21,8 @@ class HangManView(View):
         else:
             random_idx = random.randint(0, Question.objects.count() - 1)
             question = Question.objects.all()[random_idx]
+            
+        score = Score.objects.filter(user=request.user).annotate(x=Sum('score'))
         
         if request.user.is_authenticated():
             return render_to_response('index.html', locals())
@@ -28,39 +30,38 @@ class HangManView(View):
         return render_to_response('home.html')
         
 
-class QuestionView(View):
+class CreateQuestionView(View):
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(QuestionView, self).dispatch(*args, **kwargs)
-    
-    def get(self, request, question_id=None):
-        #Get a question from id, if no id then random
-        if question_id is not None:
-            question = Question.objects.get(pk=question_id)
-        else:
-            random_idx = random.randint(0, Question.objects.count() - 1)
-            question = Question.objects.all()[random_idx]
-            
-        question_dict = dict()
-        question_dict['id'] = question.id
-        question_dict['word'] = question.word
-        question_dict['hint'] = question.hint
-        question_dict['user'] = question.created_by.first_name
-        
-        return HttpResponse(json.dumps(question_dict))
     
     @csrf_exempt
     def post(self, request):
         word = request.POST.get('word')
         hint = request.POST.get('hint')
-        print word
-        print hint
-        print request.user
+
         question = Question(word=word, hint=hint, created_by=request.user)
         question.save()
         
         return HttpResponse(status=201)
 
+class ScoreView(View):
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(QuestionView, self).dispatch(*args, **kwargs)
+    
+    @csrf_exempt
+    def post(self, request):
+        score = request.POST.get('score')
+        question_id = request.POST.get('question_id')
+        question = Question.objects.get(pk=question_id)
+        
+        score = Score(question=question,user=request.user,score=int(score))
+        score.save()
+        
+        return HttpResponse(status=201)
+    
+    
 @csrf_exempt
 def post2(request):
     word = request.POST.get('word')

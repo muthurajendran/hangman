@@ -8,5 +8,5 @@ class Question(models.Model):
 
 class Score(models.Model):
     question = models.OneToOneField(Question)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User)
     score = models.IntegerField()
