@@ -229,16 +229,16 @@ function initGameState ()
 function restoreGameState ()
 {
     if (localStorage && localStorage["com.intel.hom.word"] &&
-	localStorage["com.intel.hom.gameInProgress"] && (localStorage["com.intel.hom.gameInProgress"] === "true"))
+    localStorage["com.intel.hom.gameInProgress"] && (localStorage["com.intel.hom.gameInProgress"] === "true"))
     {
-	wrongGuesses = localStorage["com.intel.hom.wrongGuesses"] || "";
-	rightGuesses = localStorage["com.intel.hom.rightGuesses"] || "";
-	word = localStorage["com.intel.hom.word"];
-	gameType = localStorage["com.intel.hom.gameType"] || 0;
-	gameInProgress = true;
+    wrongGuesses = localStorage["com.intel.hom.wrongGuesses"] || "";
+    rightGuesses = localStorage["com.intel.hom.rightGuesses"] || "";
+    word = localStorage["com.intel.hom.word"];
+    gameType = localStorage["com.intel.hom.gameType"] || 0;
+    gameInProgress = true;
     }
     else {
-	initGameState();
+    initGameState();
     }
 }
 
@@ -272,8 +272,8 @@ function clearTimers ()
 {
     [waitId, timeoutId].forEach(function(id) {
         if (id) {
-	    clearInterval(id);
-	    id = 0;
+        clearInterval(id);
+        id = 0;
         }
     });
 }
@@ -487,6 +487,8 @@ function addButtonEffects (elem)
 function initButton (domId, handler)
 {
     var elem = setLocaleString(domId);
+
+
     elem.addEventListener("click", function(e) {
         soundBoard.play("click");
         handler(e);
@@ -583,10 +585,10 @@ function readwordlist(item)
     request.onload = function(e) {
         var requestStr = this.responseText;
         try {
-	    item.data = JSON.parse(requestStr);
+        item.data = JSON.parse(requestStr);
         }
         catch(err) {
-	    console.log("Unable to read wordList: "+file);
+        console.log("Unable to read wordList: "+file);
         }
     }
     request.send();
@@ -727,6 +729,22 @@ function giveUpConfirm (event)
 
 function playAgain (event)
 {
+    
+
+    var word = document.getElementById("word_challenge").value;
+    var hint = document.getElementById("word_hint").value;
+    
+    var json = {};
+    json['word'] = word;
+    json['hint'] = hint;
+    json = JSON.stringify(json);
+
+    //alert(word+" "+hint);
+
+    load('http://localtest.me:8001/questions/', json , function(xhr) {
+        alert(xhr.responseText);
+        //document.getElementById('container').innerHTML = xhr.responseText;
+    });
     ignoreNewGame = false;
     hideDialog("win_dialog", "lose_dialog");
     startGame();
@@ -759,12 +777,12 @@ function doWinLose (didWin)
 function chooseLocalWord (wordList)
 {
     if (wordList.length == 0) {
-	console.log("No such words available!");
+    console.log("No such words available!");
         return undefined;
     }
     else {
-	var i = Math.floor(Math.random() * wordList.length);
-	return wordList[i].toUpperCase();
+    var i = Math.floor(Math.random() * wordList.length);
+    return wordList[i].toUpperCase();
     }
 }
 
@@ -1005,3 +1023,35 @@ initGameState();
 //restoreGameState(); removed for PTWEB-1053
 initGetMessage();
 clearTimers();
+
+function load(url, data, callback) {
+    var xhr;
+    if(typeof XMLHttpRequest !== 'undefined') xhr = new XMLHttpRequest();
+    else {
+        var versions = ["MSXML2.XmlHttp.5.0", 
+                        "MSXML2.XmlHttp.4.0",
+                        "MSXML2.XmlHttp.3.0", 
+                        "MSXML2.XmlHttp.2.0",
+                        "Microsoft.XmlHttp"]
+         for(var i = 0, len = versions.length; i < len; i++) {
+            try {
+                xhr = new ActiveXObject(versions[i]);
+                break;
+            }
+            catch(e){}
+         } // end for
+    }
+    xhr.onreadystatechange = ensureReadiness;
+    function ensureReadiness() {
+        if(xhr.readyState < 4) 
+            return;
+        if(xhr.status !== 200)
+            return;
+        // all is well  
+        if(xhr.readyState === 4)
+            callback(xhr);          
+    }
+    xhr.open('POST', url, true);
+    xhr.send(data);
+}
+
