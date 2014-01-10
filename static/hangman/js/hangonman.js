@@ -223,7 +223,8 @@ function initGameState ()
     matches = 0;
     gameType = 0;
     gameInProgress = false;
-    localStorage["com.intel.hom.gameInProgress"] = false;
+    ignoreNewGame = false;
+    localStorage["com.intel.hom.gameInProgress"] = true;
 }
 
 function restoreGameState ()
@@ -285,24 +286,45 @@ function initAnswer (answerString)
     }
     var alphabetString = getMessage("alphabet");
     var answerElem = document.getElementById("answer");
+
     while (answerElem.hasChildNodes()) {
         answerElem.removeChild(answerElem.firstChild);
     }
 
+    // var challenge_word = document.getElementById('challenge_word');
+    // if(challenge_word){
+    //     //answer['string'] = challenge_word.innerText;
+    //     answerString = challenge_word.innerText;
+    //     //alert(words);
+    // }
     var words = answerString.match(/\S+/g);
     var answer = { "string": words.join(" "),
                    "letters": "",
                    "numRight": 0,
                    "data": [] };
+
+    //alert(answer);
+    //alert(challenge_word.innerText);
+
+   
     var alphabetRegex = new RegExp("["+alphabetString+"]");
+    //alert(words);
 
     for (var i in words) {
         var wordElem = document.createElement("div");
         wordElem.classList.add("answer_word");
         answerElem.appendChild(wordElem);
 
+
+
         var part = words[i];
+
+        //alert(part);
+
         for (var j in part) {
+
+           // alert(j);
+
             var letterContainer = document.createElement("div");
             letterContainer.classList.add("answerText_container");
             wordElem.appendChild(letterContainer);
@@ -312,6 +334,7 @@ function initAnswer (answerString)
 
             var letter = part[j];
             if (letter.match(alphabetRegex)) {
+               // alert("viijya");
                 letterElem.classList.add("answerText");
                 letterElem.innerHTML = "&emsp;";
                 answer.letters += letter;
@@ -323,6 +346,8 @@ function initAnswer (answerString)
             }
         }
     }
+    //alert(answer.string);
+
     return answer;
 }
 
@@ -636,17 +661,27 @@ function selectGameType (event)
         gameTypeLabel = gameTypeLabel || document.getElementById("game_type");
         gameTypeLabel.innerText = event.target.innerText;
     }
-    alert(game_type);
+    //alert(game_type);
     hideDialog("newGame_dialog");
     startGame();
 }
 
 function getNewWord ()
 {
-    var list = wordLists[gameType];
-    if (list.hasOwnProperty("src")) {
-        word = chooseLocalWord(list.data);
+    var challenge_word = document.getElementById('challenge_word');
+
+    if (challenge_word.innerText) {
+        word = challenge_word.innerText;
+        word = word.toUpperCase();
     }
+    else
+    {
+        var list = wordLists[gameType];
+        if (list.hasOwnProperty("src")) {
+            word = chooseLocalWord(list.data);
+        }
+    }
+        
 }
 
 function firstStart (event)
@@ -661,8 +696,23 @@ function firstStart (event)
     // pop up the game category selector with no cancel
     var cancel = document.getElementById("newGame_cancel");
     cancel.style.visibility="hidden";
-    hideElement("help");
-    showDialog("newGame_dialog");
+    
+    var url = window.location.href;
+    var id="";
+    if(url){
+        var seg = url.split("/");
+        for(var i=0; i<seg.length;i++){
+            if(seg[i]=="q")
+                id=seg[++i];
+        }
+    }
+    if(id){
+        startGame();
+    } else {
+        hideElement("help");
+        showDialog("newGame_dialog");
+    }
+    
 }
 
 function startGame (event)
@@ -678,6 +728,8 @@ function startGame (event)
     hideElement("help");
     alphabet = initAlphabet();
     answer = initAnswer(word);
+    //alert(answer);
+
     saveGameState();
 }
 
@@ -745,7 +797,7 @@ function playAgain (event)
     
     $.ajax({
   type: "POST",
-  url: 'http://localtest.me/questions/',
+  url: '/questions/',
   data: param,
   success: function(){alert('hi');},
 });
