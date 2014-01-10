@@ -19,7 +19,7 @@ function initGetMessage ()
     }
     else {
         var request = new XMLHttpRequest();
-        request.open("GET", "static/hangman/locales/en/messages.json", false);  // TODO: synchronous for now
+        request.open("GET", "/static/hangman/locales/en/messages.json", false);  // TODO: synchronous for now
         request.send();
         var requestStr = request.responseText;
         try {
