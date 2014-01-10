@@ -1,0 +1,7 @@
+*.pyc
+local_settings.py
+projectq.sqlite
+*.idea
+encodings.xml
+celerybeat-schedule.db
+celerybeat.pid
