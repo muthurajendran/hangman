@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.views.generic.base import View
-
+from django.db.models import Sum
 from models import Question, Score
 
 def home(request):
@@ -22,7 +22,7 @@ class HangManView(View):
             random_idx = random.randint(0, Question.objects.count() - 1)
             question = Question.objects.all()[random_idx]
             
-        score = Score.objects.filter(user=request.user).annotate(x=Sum('score'))
+        score = 0 #Score.objects.filter(user=request.user).annotate(x=Sum('score'))
         
         if request.user.is_authenticated():
             return render_to_response('index.html', locals())
