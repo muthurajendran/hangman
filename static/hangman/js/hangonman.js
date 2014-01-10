@@ -331,6 +331,7 @@ var faceElem;
 function guessedRight (letter)
 {
     soundBoard.play("yeah");
+   // alert("guessed right");
 
     faceElem = faceElem || document.querySelector("#hangman #face");
     faceElem.classList.add("guessedRight");
@@ -342,6 +343,8 @@ function guessedRight (letter)
         ++(answer.numRight);
         pos = string.indexOf(letter, pos+1);
     }
+    //alert(answer.data);
+    //alert(answer.letters);
 }
 
 
@@ -349,6 +352,8 @@ function guessedWrong (letter)
 {
     wrongGuesses = wrongGuesses + letter;
     gameInProgress = !didLose();
+
+    //alert("guessesd wrong");
 
     faceElem = faceElem || document.querySelector("#hangman #face");
     updateHangman();
