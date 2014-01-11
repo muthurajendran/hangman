@@ -26,7 +26,7 @@ class HangManView(View):
                 random_idx = random.randint(0, Question.objects.count() - 1)
                 question = Question.objects.all()[random_idx]
             
-                score = Score.objects.filter(user=request.user).annotate(x=Sum('score'))
+                total_score = Score.objects.filter(user=request.user).aggregate(Sum('score'))['score__sum']
                 root_domain = settings.ROOT_DOMAIN
                 if request.user.is_authenticated():
                     return render_to_response('index.html', locals())

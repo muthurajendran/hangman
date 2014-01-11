@@ -15,4 +15,4 @@ class Score(models.Model):
     score = models.IntegerField()
     
     def __unicode__(self):
-        return self.question
+        return self.question.word
