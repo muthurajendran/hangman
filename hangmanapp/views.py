@@ -22,16 +22,14 @@ class HangManView(View):
         if question_id is not None:
             question = Question.objects.get(pk=question_id)
         else:
-            if Question.objects.count() > 0:
-                random_idx = random.randint(0, Question.objects.count() - 1)
-                question = Question.objects.all()[random_idx]
-            
-                total_score = Score.objects.filter(user=request.user).aggregate(Sum('score'))['score__sum']
-                root_domain = settings.ROOT_DOMAIN
-                if request.user.is_authenticated():
-                    return render_to_response('index.html', locals())
-            else:
-                return render_to_response('index.html', locals())
+            random_idx = random.randint(0, Question.objects.count() - 1)
+            question = Question.objects.all()[random_idx]
+        
+            total_score = Score.objects.filter(user=request.user).aggregate(Sum('score'))['score__sum']
+            root_domain = settings.ROOT_DOMAIN
+        if request.user.is_authenticated():
+            return render_to_response('index.html', locals())
+
         return render_to_response('home.html')
         
 
