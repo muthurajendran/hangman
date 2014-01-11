@@ -787,7 +787,7 @@ function playAgain (event)
 
     var word = document.getElementById("word_challenge").value;
     var hint = document.getElementById("word_hint").value;
-    
+    var base_url= document.getElementById("root_domain").innerText;
     //var json = {};
     //json['word'] = word;
     //json['hint'] = hint;
@@ -797,9 +797,9 @@ function playAgain (event)
     
     $.ajax({
   type: "POST",
-  url: '/questions/',
+  url: base_url+'/questions/',
   data: param,
-  success: function(){alert('hi');},
+  success: function(){alert('Succesfully posted');},
 });
     
     /*
