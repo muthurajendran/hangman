@@ -19,6 +19,7 @@ def home(request):
 
 class HangManView(View):
     def get(self, request, question_id=None):
+        root_domain = settings.ROOT_DOMAIN
         if question_id is not None:
             question = Question.objects.get(pk=question_id)
         else:
@@ -26,7 +27,7 @@ class HangManView(View):
             question = Question.objects.all()[random_idx]
         
             total_score = Score.objects.filter(user=request.user).aggregate(Sum('score'))['score__sum']
-            root_domain = settings.ROOT_DOMAIN
+        
         if request.user.is_authenticated():
             return render_to_response('index.html', locals())
 

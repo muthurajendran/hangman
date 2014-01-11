@@ -287,6 +287,10 @@ function initAnswer (answerString)
     var alphabetString = getMessage("alphabet");
     var answerElem = document.getElementById("answer");
 
+    var gameTypeLabel1 = document.getElementById("game_type");
+
+    gameTypeLabel1.innerText = answerString;
+
     while (answerElem.hasChildNodes()) {
         answerElem.removeChild(answerElem.firstChild);
     }
@@ -797,7 +801,7 @@ function playAgain (event)
     
     $.ajax({
   type: "POST",
-  url: base_url+'/questions/',
+  url: base_url+'questions/',
   data: param,
   success: function(){alert('Succesfully posted');},
 });
